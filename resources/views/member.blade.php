@@ -10,7 +10,7 @@
 <body class="bg-gray-300">
    <div style="width:210mm !important;" class="mx-auto bg-white mt-8 p-8">
         <div class="flex items-start justify-between text-right">
-            <img src="{{$member->picture == null ? '/storage/'.$member->picture : 'https://via.placeholder.com/150'}}"
+            <img src="{{$member->picture != null ? '/storage/'.$member->picture : 'https://via.placeholder.com/150'}}"
             alt=""
             class="w-32 h-32 object-fit"
             />
