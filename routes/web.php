@@ -25,7 +25,7 @@ Route::get('/', function () {
 });
 
 Route::get('/member/{member:reference_number}', function (Member $member) {
-    return $member;
+    return view('member', compact('member'));
 })->name('member.show');
 
 
