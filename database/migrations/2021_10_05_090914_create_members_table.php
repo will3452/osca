@@ -27,7 +27,7 @@ class CreateMembersTable extends Migration
             $table->string('barangay')->nullable();
             $table->string('occupation')->nullable();
             $table->string('position')->nullable();
-            $table->timestamp('date_of_membership');
+            $table->timestamp('date_of_membership')->nullable();
             $table->timestamps();
         });
     }
