@@ -11,11 +11,12 @@ use Kristories\Qrcode\Qrcode;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Image;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use App\Nova\Actions\ViewOrDownloadQrCode;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
 
 class Member extends Resource
 {
@@ -178,6 +179,7 @@ class Member extends Resource
         return [
             ViewOrDownloadQrCode::make()
                 ->onlyOnDetail(),
+            new DownloadExcel
         ];
     }
 }
