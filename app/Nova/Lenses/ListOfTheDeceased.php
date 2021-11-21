@@ -64,6 +64,8 @@ class ListOfTheDeceased extends Lens
 
                         Text::make('Position')
                             ->hideFromIndex(),
+
+                        Date::make('Died At'),
                     ]),
 
                     Tab::make('Address', [
