@@ -1,75 +1,37 @@
 <?php
 
-namespace App\Nova;
+namespace App\Nova\Lenses;
 
-use App\Nova\Actions\MarkAsDeath;
 use Eminiarts\Tabs\Tab;
-use Laravel\Nova\Panel;
 use Eminiarts\Tabs\Tabs;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Kristories\Qrcode\Qrcode;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Lenses\Lens;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
-use App\Nova\Actions\ViewOrDownloadQrCode;
-use App\Nova\Lenses\ListOfTheDeceased;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
+use Laravel\Nova\Http\Requests\LensRequest;
 
-class Member extends Resource
+class ListOfTheDeceased extends Lens
 {
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        if (is_null(auth()->user()->barangay)) {
-            return $query;
-        }
-        return $query->where('barangay', auth()->user()->barangay);
-    }
-
-    public static function label()
-    {
-        return 'Member Records';
-    }
-
-    public static function icon()
-    {
-        // Assuming you have a blade file containing an image
-        // in resources/views/vendor/nova/svg/icon-user.blade.php
-        return view('nova::svg.icon-user')->render();
-    }
-
     /**
-     * The model the resource corresponds to.
+     * Get the query builder / paginator for the lens.
      *
-     * @var string
+     * @param  \Laravel\Nova\Http\Requests\LensRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return mixed
      */
-    public static $model = \App\Models\Member::class;
-
-    /**
-     * The single value that should be used to represent the resource when being displayed.
-     *
-     * @var string
-     */
-    public function title()
+    public static function query(LensRequest $request, $query)
     {
-        return "$this->reference_number - $this->first_name $this->last_name";
+        return $request->withOrdering($request->withFilters(
+            $query->whereNotNull('died_at'),
+        ));
     }
 
     /**
-     * The columns that should be searched.
-     *
-     * @var array
-     */
-    public static $search = [
-        'reference_number',
-    ];
-
-    /**
-     * Get the fields displayed by the resource.
+     * Get the fields available to the lens.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -138,7 +100,7 @@ class Member extends Resource
     }
 
     /**
-     * Get the cards available for the request.
+     * Get the cards available on the lens.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -149,7 +111,7 @@ class Member extends Resource
     }
 
     /**
-     * Get the filters available for the resource.
+     * Get the filters available for the lens.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -160,31 +122,23 @@ class Member extends Resource
     }
 
     /**
-     * Get the lenses available for the resource.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
-    public function lenses(Request $request)
-    {
-        return [
-            ListOfTheDeceased::make(),
-        ];
-    }
-
-    /**
-     * Get the actions available for the resource.
+     * Get the actions available on the lens.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function actions(Request $request)
     {
-        return [
-            ViewOrDownloadQrCode::make()
-                ->onlyOnDetail(),
-            new DownloadExcel,
-            new MarkAsDeath(),
-        ];
+        return parent::actions($request);
+    }
+
+    /**
+     * Get the URI key for the lens.
+     *
+     * @return string
+     */
+    public function uriKey()
+    {
+        return 'list-of-the-deceased';
     }
 }
