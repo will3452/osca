@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\MarkAsDeath;
 use Eminiarts\Tabs\Tab;
 use Laravel\Nova\Panel;
 use Eminiarts\Tabs\Tabs;
@@ -179,7 +180,8 @@ class Member extends Resource
         return [
             ViewOrDownloadQrCode::make()
                 ->onlyOnDetail(),
-            new DownloadExcel
+            new DownloadExcel,
+            new MarkAsDeath(),
         ];
     }
 }

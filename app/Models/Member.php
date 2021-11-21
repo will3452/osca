@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Member extends Model
 {
-    
+
     use HasFactory;
     use LogsActivity;
 
@@ -32,7 +32,8 @@ class Member extends Model
 
     protected $casts = [
         'date_of_membership'=>'datetime',
-        'birthdate'=>'datetime'
+        'birthdate'=>'datetime',
+        'died_at' => 'datetime',
     ];
 
     public function getUrlAttribute()
