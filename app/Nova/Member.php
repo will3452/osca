@@ -101,6 +101,10 @@ class Member extends Resource
                         Text::make('Mobile No.', 'mobile')
                             ->exceptOnForms(),
 
+                        Text::make('Contact Number')
+                            ->onlyOnForms()
+                            ->required(),
+
 
                         Text::make('Occupation')
                             ->hideFromIndex(),
