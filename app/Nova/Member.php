@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use App\Nova\Actions\MarkAsDeath;
+use App\Nova\Actions\sendSmsMessage;
 use Eminiarts\Tabs\Tab;
 use Laravel\Nova\Panel;
 use Eminiarts\Tabs\Tabs;
@@ -97,6 +98,10 @@ class Member extends Resource
                         Text::make('Place Of Birth')
                             ->rules(['required'])->hideFromIndex(),
 
+                        Text::make('Mobile No.', 'mobile')
+                            ->exceptOnForms(),
+
+
                         Text::make('Occupation')
                             ->hideFromIndex(),
 
@@ -185,6 +190,7 @@ class Member extends Resource
                 ->onlyOnDetail(),
             new DownloadExcel,
             new MarkAsDeath(),
+            new sendSmsMessage(),
         ];
     }
 }

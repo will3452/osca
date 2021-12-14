@@ -25,7 +25,9 @@ class RegisterController extends Controller
             'barangay'=>'required',
             'occupation'=>'required',
             'position'=>'required',
+            'contact_number' => 'required',
         ]);
+
         $image = $data['picture']->store('public');
         $imageArray = explode('/', $image);
         $imageEnd = end($imageArray);

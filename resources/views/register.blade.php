@@ -24,6 +24,10 @@
                     <label class="w-full font-bold text-base uppercase block">Place Of Birth</label>
                     <input class="mr-2 w-full p-2 border-green-500 border-2 rounded" type="text" required name="place_of_birth">
                 </div>
+                <div>
+                    <label class="w-full font-bold text-base uppercase block">Mobile No. <small>( 9123456789 )</small></label>
+                    <input class="mr-2 w-full p-2 border-green-500 border-2 rounded" type="number" required name="contact_number">
+                </div>
             </div>
         </div>
         <div class="mt-2 mb-3">

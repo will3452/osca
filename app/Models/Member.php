@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Member extends Model
 {
-
     use HasFactory;
     use LogsActivity;
 
@@ -27,7 +26,8 @@ class Member extends Model
         'barangay',
         'occupation',
         'position',
-        'date_of_membership'
+        'date_of_membership',
+        'contact_number'
     ];
 
     protected $casts = [
@@ -49,5 +49,10 @@ class Member extends Model
     public function associations()
     {
         return $this->hasMany(Association::class);
+    }
+
+    public function getMobileAttribute()
+    {
+        return "63" . $this->contact_number;
     }
 }
