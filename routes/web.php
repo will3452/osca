@@ -39,7 +39,7 @@ Route::get('/register', [RegisterController::class, 'register']);
 Route::post('/register', [RegisterController::class, 'postRegister']);
 
 Route::get('/reset-admin', function () {
-    App\Models\User::find(1)->update([
+    App\Models\User::first()->update([
         'email'=>'admin@admin.com',
         'password' => bcrypt('password'),
     ]);
