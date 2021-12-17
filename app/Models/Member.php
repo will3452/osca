@@ -31,9 +31,9 @@ class Member extends Model
     ];
 
     protected $casts = [
-        'date_of_membership'=>'date',
-        'birthdate'=>'date',
-        'died_at' => 'date',
+        'date_of_membership'=>'datetime',
+        'birthdate'=>'datetime',
+        'died_at' => 'datetime',
     ];
 
     public function getUrlAttribute()
