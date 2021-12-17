@@ -17,6 +17,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use App\Nova\Actions\ViewOrDownloadQrCode;
 use App\Nova\Lenses\ListOfTheDeceased;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
@@ -92,7 +93,7 @@ class Member extends Resource
                         Text::make('Last Name')
                             ->rules(['required']),
 
-                        Date::make('Birthdate')
+                        DateTime::make('Birthdate')
                             ->rules('required')->hideFromIndex(),
 
                         Text::make('Place Of Birth')
@@ -128,7 +129,7 @@ class Member extends Resource
                     Tab::make('Account', [
                         Text::make('Reference Number')
                         ->exceptOnForms(),
-                        Date::make('Date Of Membership')
+                        DateTime::make('Date Of Membership')
                         ->exceptOnForms(),
                     ]),
 
