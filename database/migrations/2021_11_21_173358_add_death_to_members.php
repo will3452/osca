@@ -14,7 +14,7 @@ class AddDeathToMembers extends Migration
     public function up()
     {
         Schema::table('members', function (Blueprint $table) {
-            $table->timestamp('died_at')->nullable();
+            $table->string('died_at')->nullable();
         });
     }
 

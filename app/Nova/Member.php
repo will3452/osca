@@ -93,7 +93,7 @@ class Member extends Resource
                         Text::make('Last Name')
                             ->rules(['required']),
 
-                        DateTime::make('Birthdate')
+                        Date::make('Birthdate')
                             ->rules('required')->hideFromIndex(),
 
                         Text::make('Place Of Birth')
@@ -129,7 +129,7 @@ class Member extends Resource
                     Tab::make('Account', [
                         Text::make('Reference Number')
                         ->exceptOnForms(),
-                        DateTime::make('Date Of Membership')
+                        Date::make('Date Of Membership')
                         ->exceptOnForms(),
                     ]),
 

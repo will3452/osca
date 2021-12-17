@@ -20,14 +20,14 @@ class CreateMembersTable extends Migration
             $table->string('first_name');
             $table->string('middle_name');
             $table->string('last_name');
-            $table->timestamp('birthdate');
+            $table->string('birthdate');
             $table->string('place_of_birth');
             $table->string('house_no')->nullable();
             $table->string('street')->nullable();
             $table->string('barangay')->nullable();
             $table->string('occupation')->nullable();
             $table->string('position')->nullable();
-            $table->timestamp('date_of_membership')->nullable();
+            $table->string('date_of_membership')->nullable();
             $table->string('contact_number');
             $table->timestamps();
         });
