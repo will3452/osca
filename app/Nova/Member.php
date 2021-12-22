@@ -68,6 +68,10 @@ class Member extends Resource
      */
     public static $search = [
         'reference_number',
+        'first_name',
+        'last_name',
+        'middle_name',
+        'Barangay'
     ];
 
     /**

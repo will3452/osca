@@ -42,4 +42,10 @@ class AuditTrail extends Activitylog
      * @var string
      */
     public static $model = Activity::class;
+
+    public static $search = [
+        'log_name',
+        'description',
+        'properties',
+    ];
 }

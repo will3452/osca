@@ -13,6 +13,7 @@ class Member extends Model
 
     protected $guarded = [];
 
+
     protected static $logAttributes = [
         'picture',
         'reference_number',
