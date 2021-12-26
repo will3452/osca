@@ -2,64 +2,39 @@
 
 namespace App\Nova;
 
-use App\Nova\Actions\MarkAsDeath;
-use App\Nova\Actions\sendSmsMessage;
 use Eminiarts\Tabs\Tab;
-use Laravel\Nova\Panel;
 use Eminiarts\Tabs\Tabs;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Kristories\Qrcode\Qrcode;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
+use App\Nova\Actions\sendSmsMessage;
 use App\Nova\Actions\ViewOrDownloadQrCode;
-use App\Nova\Lenses\ListOfTheDeceased;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
 
-class Member extends Resource
+class ListOfDeceased extends Resource
 {
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        if (is_null(auth()->user()->barangay)) {
-            return $query;
-        }
-        return $query->where('barangay', auth()->user()->barangay);
-    }
-
     public static function label()
     {
-        return 'Member Records';
+        return 'List of Deceased';
     }
-
-    public static function icon()
-    {
-        // Assuming you have a blade file containing an image
-        // in resources/views/vendor/nova/svg/icon-user.blade.php
-        return view('nova::svg.icon-user')->render();
-    }
-
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Member::class;
+    public static $model = \App\Models\Deceased::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public function title()
-    {
-        return "$this->reference_number - $this->first_name $this->last_name";
-    }
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -71,7 +46,7 @@ class Member extends Resource
         'first_name',
         'last_name',
         'middle_name',
-        'Barangay'
+        'Barangay',
     ];
 
     /**
@@ -99,6 +74,9 @@ class Member extends Resource
 
                         Date::make('Birthdate')
                             ->rules('required')->hideFromIndex(),
+
+                        Date::make('Died at')
+                            ->exceptOnForms(),
 
                         Text::make('Place Of Birth')
                             ->rules(['required'])->hideFromIndex(),
@@ -181,24 +159,15 @@ class Member extends Resource
      */
     public function lenses(Request $request)
     {
-        return [
-
-        ];
+        return [];
     }
 
-    /**
-     * Get the actions available for the resource.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
     public function actions(Request $request)
     {
         return [
             ViewOrDownloadQrCode::make()
                 ->onlyOnDetail(),
             new DownloadExcel,
-            new MarkAsDeath(),
             new sendSmsMessage(),
         ];
     }

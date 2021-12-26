@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Member extends Model
+class Deceased extends Model
 {
     use HasFactory;
     use LogsActivity;
 
     protected $guarded = [];
 
+    protected $table = 'members';
 
     protected static $logAttributes = [
         'picture',
@@ -67,7 +68,7 @@ class Member extends Model
     protected static function booted()
     {
         static::addGlobalScope('living', function (Builder $builder) {
-            $builder->whereNull('died_at');
+            $builder->whereNotNull('died_at');
         });
     }
 }
