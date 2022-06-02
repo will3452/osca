@@ -24,7 +24,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/member/{member:reference_number}', function (Member $member) {
+Route::get('/member/{ref}', function ($ref) {
+    $refArray = explode('!_!zQ', $ref);
+    $refNumber = $refArray[0];
+    $member = Member::whereReferenceNumber($refNumber)->first();
     return view('member', compact('member'));
 })->name('member.show');
 

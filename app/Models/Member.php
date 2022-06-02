@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -41,7 +42,7 @@ class Member extends Model
 
     public function getUrlAttribute()
     {
-        return route('member.show', ['member'=>$this]);
+        return route('member.show', ['ref'=>$this->reference_number . "!_!zQ" . Str::random(32)]);
     }
 
     public function families()
