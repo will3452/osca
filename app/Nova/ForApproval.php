@@ -2,7 +2,6 @@
 
 namespace App\Nova;
 
-use App\Nova\Actions\GenerateReport;
 use App\Nova\Actions\MarkAsDeath;
 use App\Nova\Actions\sendSmsMessage;
 use Eminiarts\Tabs\Tab;
@@ -22,20 +21,25 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
+use App\Nova\Actions\Approve;
 
-class Member extends Resource
+class ForApproval extends Resource
 {
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
     public static function indexQuery(NovaRequest $request, $query)
     {
         if (is_null(auth()->user()->barangay)) {
-            return $query->whereStatus(\App\Models\Member::STATUS_ACTIVE);
+            return $query->whereStatus(\App\Models\Member::STATUS_PENDING);
         }
-        return $query->whereStatus(\App\Models\Member::STATUS_ACTIVE)->where('barangay', auth()->user()->barangay);
+        return $query->whereStatus(\App\Models\Member::STATUS_PENDING)->where('barangay', auth()->user()->barangay);
     }
 
     public static function label()
     {
-        return 'Member Records';
+        return 'For Approval';
     }
 
     public static function icon()
@@ -50,7 +54,7 @@ class Member extends Resource
      *
      * @var string
      */
-    public static $model = \App\Models\Member::class;
+    public static $model = \App\Models\ForApproval::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -196,11 +200,7 @@ class Member extends Resource
     public function actions(Request $request)
     {
         return [
-            ViewOrDownloadQrCode::make()
-                ->onlyOnDetail(),
-            (new GenerateReport)->standalone(),
-            new DownloadExcel,
-            new MarkAsDeath(),
+            new Approve(),
             new sendSmsMessage(),
         ];
     }

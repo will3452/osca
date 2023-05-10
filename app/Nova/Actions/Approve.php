@@ -2,15 +2,14 @@
 
 namespace App\Nova\Actions;
 
-use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
-use Laravel\Nova\Actions\Action;
-use Illuminate\Support\Collection;
-use Laravel\Nova\Fields\ActionFields;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Collection;
+use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Fields\ActionFields;
 
-class ViewOrDownloadQrCode extends Action
+class Approve extends Action
 {
     use InteractsWithQueue, Queueable;
 
@@ -24,7 +23,7 @@ class ViewOrDownloadQrCode extends Action
     public function handle(ActionFields $fields, Collection $models)
     {
         foreach ($models as $model) {
-            return Action::openInNewTab(route('qr.download', ['ref'=>$model->reference_number . '!234-_$34' . Str::random(32)]));
+            $model->update(['status' => \App\Models\Member::STATUS_ACTIVE]);
         }
     }
 

@@ -4,6 +4,12 @@
         Membership Registration Form
     </h1>
 
+    @if(session()->has('success'))
+    <div class="text-center text-green-500">
+        Registration Completed!
+    </div>
+    @endif
+
     <form action="/register" method="POST" enctype="multipart/form-data" class="w-full md:w-8/12 mx-auto">
         @csrf
         <div class="mt-2 mb-3">

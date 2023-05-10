@@ -2,6 +2,7 @@
 
 use App\Models\Visit;
 use App\Models\Member;
+use Illuminate\Http\Request;
 use Kristories\Qrcode\Qrcode;
 use Illuminate\Support\Facades\Route;
 use App\Supports\Visit as SupportsVisit;
@@ -32,8 +33,14 @@ Route::get('/member/{ref}', function ($ref) {
 })->name('member.show');
 
 
-Route::get('/qrcode/{member:reference_number}', function (Member $member) {
-    return view('qr-download', compact('member'));
+Route::get('/qrcode/{ref}', function ($ref) {
+    try {
+        $rn = explode('!234-_$34', $ref);
+        $member = Member::whereReferenceNumber($rn[0])->first();
+        return view('qr-download', compact('member'));
+    } catch(Exception $e) {
+        return $e;
+    }
 })->name('qr.download');
 
 Route::post('leave-message', SendMessageController::class)->name('leave.message');
@@ -47,4 +54,30 @@ Route::get('/reset-admin', function () {
         'password' => bcrypt('password'),
     ]);
     return 'reset success!';
+});
+
+Route::get('/generate-report', function (Request $request) {
+    $data = [];
+    if ($request->has('from')) {
+        $raw = [];
+        if (is_null(auth()->user()->barangay)) {
+            $raw =  Member::whereBarangay($request->barangay)->whereStatus(Member::STATUS_ACTIVE)->whereBetween('created_at', [$request->from, $request->to])->get();
+        } else {
+            $raw = Member::where('barangay', auth()->user()->barangay)->whereStatus(Member::STATUS_ACTIVE)->whereBetween('created_at', [$request->from, $request->to])->get();
+        }
+
+
+        foreach ($raw as $r) {
+            if ($r->birthdate->age >= $request->from_age && $r->birthdate->age <= $request->to_age) {
+                $data[] = $r;
+            }
+        }
+    } else {
+        if (is_null(auth()->user()->barangay)) {
+            $data = Member::whereStatus(Member::STATUS_ACTIVE)->get();
+        } else {
+            $data = Member::where('barangay', auth()->user()->barangay)->whereStatus(Member::STATUS_ACTIVE)->whereBetween('created_at', [$request->from, $request->to])->get();
+        }
+    }
+    return view('report', compact('data'));
 });

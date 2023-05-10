@@ -2,22 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Member extends Model
+class ForApproval extends Model
 {
     use HasFactory;
     use LogsActivity;
 
     protected $guarded = [];
 
-    const STATUS_PENDING = 'Pending';
-    const STATUS_ACTIVE = 'Approved';
-
+    protected $table = 'members';
 
     protected static $logAttributes = [
         'picture',
@@ -45,7 +42,7 @@ class Member extends Model
 
     public function getUrlAttribute()
     {
-        return route('member.show', ['ref'=>$this->reference_number . "!_!zQ" . Str::random(32)]);
+        return route('member.show', ['member'=>$this]);
     }
 
     public function families()
@@ -71,7 +68,7 @@ class Member extends Model
     protected static function booted()
     {
         static::addGlobalScope('living', function (Builder $builder) {
-            $builder->whereNull('died_at');
+            $builder->whereStatus(Member::STATUS_PENDING);
         });
     }
 }

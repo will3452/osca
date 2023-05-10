@@ -33,6 +33,6 @@ class RegisterController extends Controller
         $imageEnd = end($imageArray);
         $data['picture'] = $imageEnd;
         $member = Member::create($data);
-        return redirect('/qrcode/'.$member->reference_number.'?register=success');
+        return back()->withSuccess('Successfully registered!');
     }
 }
