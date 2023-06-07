@@ -26,6 +26,9 @@
     <div class="flex justify-center flex-col items-center mt-4">
         <div id="qrcode"></div>
         <div class="mt-4">
+            <button onclick="/" class="print-button uppercase text-sm font-bold px-4 py-2 rounded-lg text-white bg-gray-500">
+                Back to home
+            </button>
             <button onclick="window.print()" class="print-button uppercase text-sm font-bold px-4 py-2 rounded-lg text-white bg-gray-500">
                 Print
             </button>
