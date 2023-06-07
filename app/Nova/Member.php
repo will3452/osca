@@ -2,25 +2,21 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\GenerateID;
 use App\Nova\Actions\GenerateReport;
 use App\Nova\Actions\MarkAsDeath;
 use App\Nova\Actions\sendSmsMessage;
+use App\Nova\Actions\ViewOrDownloadQrCode;
+use App\Nova\Filters\BarangayFilter;
 use Eminiarts\Tabs\Tab;
-use Laravel\Nova\Panel;
 use Eminiarts\Tabs\Tabs;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Kristories\Qrcode\Qrcode;
 use Laravel\Nova\Fields\Date;
-use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\HasMany;
-use App\Nova\Actions\ViewOrDownloadQrCode;
-use App\Nova\Lenses\ListOfTheDeceased;
-use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
 
 class Member extends Resource
@@ -72,7 +68,7 @@ class Member extends Resource
         'first_name',
         'last_name',
         'middle_name',
-        'Barangay'
+        'Barangay',
     ];
 
     /**
@@ -86,69 +82,67 @@ class Member extends Resource
         return [
             Tabs::make('Member Information', [
                 Tab::make('Basic', [
-                        Image::make('Picture')
-                            ->help('2 x 2 picture with white background'),
+                    Image::make('Picture')
+                        ->help('2 x 2 picture with white background'),
 
-                        Text::make('First Name')
+                    Text::make('First Name')
                         ->rules(['required']),
 
-                        Text::make('Middle Name')
-                            ->rules(['required']),
+                    Text::make('Middle Name')
+                        ->rules(['required']),
 
-                        Text::make('Last Name')
-                            ->rules(['required']),
+                    Text::make('Last Name')
+                        ->rules(['required']),
 
-                        Date::make('Birthdate')
-                            ->rules('required')->hideFromIndex(),
+                    Date::make('Birthdate')
+                        ->rules('required')->hideFromIndex(),
 
-                        Text::make('Place Of Birth')
-                            ->rules(['required'])->hideFromIndex(),
+                    Text::make('Place Of Birth')
+                        ->rules(['required'])->hideFromIndex(),
 
-                        Text::make('Mobile No.', 'mobile')
-                            ->exceptOnForms(),
+                    Text::make('Mobile No.', 'mobile')
+                        ->exceptOnForms(),
 
-                        Text::make('Contact Number')
-                            ->onlyOnForms()
-                            ->required(),
+                    Text::make('Contact Number')
+                        ->onlyOnForms()
+                        ->required(),
 
+                    Text::make('Occupation')
+                        ->hideFromIndex(),
 
-                        Text::make('Occupation')
-                            ->hideFromIndex(),
+                    Text::make('Position')
+                        ->hideFromIndex(),
+                ]),
 
-                        Text::make('Position')
-                            ->hideFromIndex(),
-                    ]),
+                Tab::make('Address', [
+                    Text::make('House No.', 'house_no'),
 
-                    Tab::make('Address', [
-                        Text::make('House No.', 'house_no'),
+                    Text::make('Street')
+                        ->rules(['required']),
 
-                        Text::make('Street')
-                            ->rules(['required']),
-
-                        Select::make('Barangay')
-                            ->options(is_null(auth()->user()->barangay) ?
+                    Select::make('Barangay')
+                        ->options(is_null(auth()->user()->barangay) ?
                             \App\Models\Barangay::get()->pluck('name', 'name') :
-                            \App\Models\Barangay::where('name', auth()->user()->barangay)->get()->pluck('name', 'name'))
-                    ]),
+                            \App\Models\Barangay::where('name', auth()->user()->barangay)->get()->pluck('name', 'name')),
+                ]),
 
-                    Tab::make('Account', [
-                        Text::make('Reference Number')
+                Tab::make('Account', [
+                    Text::make('Reference Number')
                         ->exceptOnForms(),
-                        Date::make('Date Of Membership')
+                    Date::make('Date Of Membership')
                         ->exceptOnForms(),
-                    ]),
+                ]),
 
-                    Tab::make('Family', [
-                        HasMany::make('Family', 'families'),
-                    ]),
+                Tab::make('Family', [
+                    HasMany::make('Family', 'families'),
+                ]),
 
-                    Tab::make('Assocations', [
-                        HasMany::make('Associations'),
-                    ]),
-
+                Tab::make('Assocations', [
+                    HasMany::make('Associations'),
+                ]),
 
             ])
-            ->withToolbar(),
+                ->withToolbar(),
         ];
     }
 
@@ -171,7 +165,9 @@ class Member extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            BarangayFilter::make(),
+        ];
     }
 
     /**
@@ -200,6 +196,7 @@ class Member extends Resource
                 ->onlyOnDetail(),
             (new GenerateReport)->standalone(),
             new DownloadExcel,
+            new GenerateID(),
             new MarkAsDeath(),
             new sendSmsMessage(),
         ];

@@ -3,17 +3,41 @@
 namespace App\Nova\Actions;
 
 use Illuminate\Bus\Queueable;
-use Laravel\Nova\Actions\Action;
-use Laravel\Nova\Fields\Textarea;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
+use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Fields\ActionFields;
+use Laravel\Nova\Fields\Textarea;
 
 class sendSmsMessage extends Action
 {
     use InteractsWithQueue, Queueable;
+
+    public function sendMessage($message, $phone)
+    {
+        $ch = curl_init();
+        $parameters = array(
+            'apikey' => env('SMS_KEY'), //Your API KEY
+            'number' => $phone,
+            'message' => $message,
+            'sendername' => 'Nuwang',
+        );
+        curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        //Send the parameters set above with the request
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
+
+        // Receive response from server
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        //Show the server response
+        echo $output;
+
+        return;
+    }
 
     /**
      * Perform the action on the given models.
@@ -24,20 +48,11 @@ class sendSmsMessage extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        $key = env('NEXMO_KEY');
-        $secret = env('NEXMO_SECRET');
 
         $message = $fields["message"];
 
-        $client = new \Nexmo\Client(new \Nexmo\Client\Credentials\Basic($key, $secret));
-
-
         foreach ($models as $model) {
-            $message = $client->message()->send([
-                'to' => "63" . $model->contact_number,
-                'from' => 'VONAGE',
-                'text' => $message
-            ]);
+            $this->sendMessage($message, $model->contact_number);
         }
     }
 

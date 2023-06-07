@@ -1,13 +1,11 @@
 <?php
 
-use App\Models\Visit;
-use App\Models\Member;
-use Illuminate\Http\Request;
-use Kristories\Qrcode\Qrcode;
-use Illuminate\Support\Facades\Route;
-use App\Supports\Visit as SupportsVisit;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SendMessageController;
+use App\Models\Member;
+use App\Supports\Visit as SupportsVisit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +16,7 @@ use App\Http\Controllers\SendMessageController;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::get('/', function () {
     SupportsVisit::init(request()->ip());
@@ -32,13 +30,12 @@ Route::get('/member/{ref}', function ($ref) {
     return view('member', compact('member'));
 })->name('member.show');
 
-
 Route::get('/qrcode/{ref}', function ($ref) {
     try {
         $rn = explode('!234-_$34', $ref);
         $member = Member::whereReferenceNumber($rn[0])->first();
         return view('qr-download', compact('member'));
-    } catch(Exception $e) {
+    } catch (Exception $e) {
         return $e;
     }
 })->name('qr.download');
@@ -50,7 +47,7 @@ Route::post('/register', [RegisterController::class, 'postRegister']);
 
 Route::get('/reset-admin', function () {
     App\Models\User::first()->update([
-        'email'=>'admin@admin.com',
+        'email' => 'admin@admin.com',
         'password' => bcrypt('password'),
     ]);
     return 'reset success!';
@@ -61,11 +58,10 @@ Route::get('/generate-report', function (Request $request) {
     if ($request->has('from')) {
         $raw = [];
         if (is_null(auth()->user()->barangay)) {
-            $raw =  Member::whereBarangay($request->barangay)->whereStatus(Member::STATUS_ACTIVE)->whereBetween('created_at', [$request->from, $request->to])->get();
+            $raw = Member::whereBarangay($request->barangay)->whereStatus(Member::STATUS_ACTIVE)->whereBetween('created_at', [$request->from, $request->to])->get();
         } else {
             $raw = Member::where('barangay', auth()->user()->barangay)->whereStatus(Member::STATUS_ACTIVE)->whereBetween('created_at', [$request->from, $request->to])->get();
         }
-
 
         foreach ($raw as $r) {
             if ($r->birthdate->age >= $request->from_age && $r->birthdate->age <= $request->to_age) {
@@ -80,4 +76,9 @@ Route::get('/generate-report', function (Request $request) {
         }
     }
     return view('report', compact('data'));
+});
+
+Route::get('/id', function (Request $request) {
+    $member = Member::findOrFail($request->member);
+    return view('gen_id', compact('member'));
 });
