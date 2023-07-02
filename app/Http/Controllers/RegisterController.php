@@ -15,8 +15,7 @@ class RegisterController extends Controller
     public function postRegister()
     {
         $data = request()->validate([
-            'picture' => 'required',
-            'first_name' => 'required',
+            'picture' => 'required', 'first_name' => 'required',
             'last_name' => 'required',
             'middle_name' => 'required',
             'birthdate' => 'required',
@@ -30,7 +29,6 @@ class RegisterController extends Controller
         ]);
 
         if (Carbon::parse(request()->birthdate)->age <= 60) {
-
             return "Invalid Date!";
         }
 
@@ -39,6 +37,7 @@ class RegisterController extends Controller
         $imageEnd = end($imageArray);
         $data['picture'] = $imageEnd;
         $member = Member::create($data);
-        return back()->withSuccess('Successfully registered!');
+        return redirect('/qrcode/' . $member->reference_number . '?register=success');
+        // return back()->withSuccess('Successfully registered!');
     }
 }
