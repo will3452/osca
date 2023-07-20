@@ -27,10 +27,11 @@ class RegisterController extends Controller
             'position' => 'required',
             'contact_number' => ['required', 'max:11'],
         ]);
-
-        if (Carbon::parse(request()->birthdate)->age <= 60) {
-            return "Invalid Date!";
+        /**
+         * if (Carbon::parse(request()->birthdate)->age <= 60) {
+        return "Invalid Date!";
         }
+         */
 
         $image = $data['picture']->store('public');
         $imageArray = explode('/', $image);
