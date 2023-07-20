@@ -4,6 +4,13 @@
         Membership Registration Form
     </h1>
 
+
+    @foreach ($errors->all() as $error)
+        <div class="text-center text-red-700" style="font-weight:900">
+            {{ $error }}
+        </div>
+        @endforeach
+
     @if(session()->has('success'))
     <div class="text-center text-green-500">
         Registration Completed!
@@ -32,7 +39,7 @@
                 </div>
                 <div>
                     <label class="w-full font-bold text-base uppercase block">Mobile No. <small>( 9123456789 )</small></label>
-                    <input class="mr-2 w-full p-2 border-green-500 border-2 rounded" type="number" required name="contact_number">
+                    <input class="mr-2 w-full p-2 border-green-500 border-2 rounded" type="text" required name="contact_number">
                 </div>
             </div>
         </div>

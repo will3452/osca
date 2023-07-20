@@ -4,9 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Event extends Resource
 {
@@ -40,7 +38,7 @@ class Event extends Resource
         'id',
         'title',
         'start',
-        'end'
+        'end',
     ];
 
     /**
@@ -53,6 +51,9 @@ class Event extends Resource
     {
         return [
             Text::make('Title')
+                ->rules(['required', 'max:30']),
+
+            Text::make('Venue')
                 ->rules(['required', 'max:30']),
 
             DateTime::make('Start')

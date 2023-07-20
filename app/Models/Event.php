@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Event extends Model
 {
@@ -15,11 +14,12 @@ class Event extends Model
     protected static $logAttributes = [
         'start',
         'end',
-        'title'
+        'title',
+        'venue',
     ];
 
     protected $casts = [
-        'start'=>'datetime',
-        'end'=>'datetime',
+        'start' => 'datetime',
+        'end' => 'datetime',
     ];
 }
