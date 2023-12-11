@@ -14,6 +14,7 @@ use Laravel\Nova\Fields\Textarea;
 use App\Nova\Metrics\NumberOfVisits;
 use Illuminate\Support\Facades\Gate;
 use Anaseqal\NovaSidebarIcons\NovaSidebarIcons;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
@@ -28,7 +29,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         parent::boot();
 
         \OptimistDigital\NovaSettings\NovaSettings::addSettingsFields([
-
+            Number::make('Maximum Login Attempt', 'max_log_attempt')->default(fn () => 5), 
             Panel::make('General Setting', [
                 Image::make('Logo')
                 ->help('After updating this setting field, please reload the page. use <b>CTRL + R</b> key combination to reload the entire page.')
