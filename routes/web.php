@@ -3,8 +3,10 @@
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SendMessageController;
 use App\Models\Member;
+use App\Models\User;
 use App\Supports\Visit as SupportsVisit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +24,27 @@ Route::get('/', function () {
     SupportsVisit::init(request()->ip());
     return view('welcome');
 });
+
+Route::post('/login', function (Request $request) {
+    $data = $request->validate([
+        'email' => ['email', 'exists:users,email', 'required'],
+        'password' => ['required',], 
+    ]); 
+
+
+    $user = User::where('email', $data['email'])->first(); 
+ 
+
+    if ($user !=  null && Hash::check($data['password'],$user->password)) {
+        
+        auth()->login($user); 
+        $user->updated_at = now(); 
+        $user->save(); 
+        return redirect()->to('/admin/dashboards/main');
+    }
+
+    abort(401); 
+}); 
 
 Route::get('/member/{ref}', function ($ref) {
     $refArray = explode('!_!zQ', $ref);

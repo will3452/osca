@@ -15,7 +15,7 @@
     </script>
     <x-header></x-header>
     <x-banner></x-banner>
-    <x-intro></x-intro>
+    {{-- <x-intro></x-intro> --}}
     <x-about></x-about>
     <x-events></x-events>
     <x-contact></x-contact>

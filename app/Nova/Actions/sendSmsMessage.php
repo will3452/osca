@@ -17,10 +17,11 @@ class sendSmsMessage extends Action
     {
         $ch = curl_init();
         $parameters = array(
-            'apikey' => env('SMS_KEY'), //Your API KEY
+            'apikey' => env('SMS_KEY', '01840ce0776e706f416144346945588b'), //Your API KEY
             'number' => $phone,
             'message' => $message,
-            'sendername' => 'Nuwang',
+            // 'sendername' => 'Nuwang',
+            'sendername' => 'SEMAPHORE'
         );
         curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
         curl_setopt($ch, CURLOPT_POST, 1);

@@ -196,7 +196,7 @@ class Member extends Resource
                 ->onlyOnDetail(),
             (new GenerateReport)->standalone(),
             new DownloadExcel,
-            new GenerateID(),
+            (new GenerateID()),
             new MarkAsDeath(),
             new sendSmsMessage(),
         ];
