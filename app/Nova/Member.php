@@ -191,14 +191,18 @@ class Member extends Resource
      */
     public function actions(Request $request)
     {
-        return [
+        $_actions = [
             ViewOrDownloadQrCode::make()
                 ->onlyOnDetail(),
             (new GenerateReport)->standalone(),
             new DownloadExcel,
-            (new GenerateID()),
             new MarkAsDeath(),
             new sendSmsMessage(),
-        ];
+        ]; 
+
+        if (auth()->user()->barangay == null) {
+            array_push($_actions, new GenerateID()); 
+        }
+        return $_actions;
     }
 }
